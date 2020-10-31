@@ -834,6 +834,78 @@
 				</listitem>
 			</varlistentry>
 
+			<varlistentry id="tag-requires-recommends-display-width-height">
+				<term>&lt;display_width/&gt; &amp; &lt;display_height/&gt;</term>
+				<listitem>
+				<para>
+					Set a relation to the display width and/or height defined as an integer value in either
+					<emphasis>millimeters</emphasis> or <emphasis>logical pixels</emphasis> (pixels divided by scaling factor).
+					To use millimeters, the <literal>unit</literal> property of this tag needs to be set to value <code>mm</code>, to use logical pixels
+					its value must be <code>px</code>. If no unit is explicitly defined, <code>mm</code> is implicitly assumed.
+				</para>
+				<para>
+					Relations of the display size can be defined using a <literal>compare</literal> property as described for <literal>requires</literal>/<literal>recommends</literal>.
+					If this property is not present, a value of <code>ge</code> (greater-or-equal) is implicitly assumed.
+				</para>
+				<para>
+					The <literal>display_width</literal> and <literal>display_height</literal> tags also accept one of the following text values,
+					which are implementation-defined and should roughly match the device class listed next to them:
+				</para>
+				<itemizedlist>
+					<listitem><para><code>xsmall</code> - Suitable for very small screens, as used in watches, wearables and other small-display devices</para></listitem>
+					<listitem><para><code>small</code> - Suitable for small screens often used in handheld devices, such as phone screens, smaller tablets.</para></listitem>
+					<listitem><para><code>medium</code> - Suitable for screens in laptops, tablets</para></listitem>
+					<listitem><para><code>large</code> - Suitable for bigger computer monitors</para></listitem>
+					<listitem><para><code>xlarge</code> - Suitable for television screens, large projected images</para></listitem>
+				</itemizedlist>
+				<para>
+					If a text value is used, the <literal>unit</literal> property must not be present. A <literal>compare</literal> property is permitted and will compare
+					the text placeholder values from smallest (<code>xsmall</code>) to largest (<code>xlarge</code>). The meaning of text placeholders may change over time.
+					The text placeholders are intended to be used by software authors who do not care too much about the exact display sizes their applications are running
+					on, but only want to give an approximate hint.
+				</para>
+				<para>
+					Each of the two tags may appear up to two times to set a minimum and maximum size required. It is recommended to not mix different units
+					(so e.g. a required minimal width is not requested in both <code>px</code> and <code>mm</code>).
+					If multiple displays are connected to a device, it is acceptable to test against either the largest screen attached to the device, or the combined
+					amount of display space (depending on what makes sense for the respective device).
+				</para>
+				<para>
+					If a display can be rotated, the width and height requirements may be checked against the longer edge of the display (for greater-than comparisons) or
+					the shorter edge of the display (for smaller-than comparisons). The software center or tool consuming AppStream metadata is expected to make a sensible
+					decision in this regard based on the individual device properties.
+				</para>
+				<para>
+					If used in a <literal>requires</literal> block, this relation can be used to restrict an application to only be installable on systems which have a minimum
+					usable display size available for it. If used in a <literal>recommends</literal> block, the application will still be
+					installable, but the user may be shown a warning.
+				</para>
+				<para>
+					If no <literal>display_width</literal> or <literal>display_height</literal> relation is present, a mimum required display width (<code>ge</code>) relation
+					of <code>medium</code> is implicitly assumed for backwards compatibility.
+				</para>
+				<para>
+					Examples:
+				</para>
+				<programlisting language="XML"><![CDATA[<!-- recommend at least 600 logical pixels of horizontal space -->
+<recommends>
+  <display_width unit="px" compare="ge">600</display_width>
+</recommends>
+
+<!-- require a device with at least 8x5cm physical screen space for this app -->
+<requires>
+  <display_width unit="mm" compare="ge">80</display_width>
+  <display_height>50</display_height>
+</requires>
+
+<!-- ensure this application is not run on a very large screen, or very small screen -->
+<requires>
+  <display_width compare="lt">xlarge</display_width>
+  <display_width compare="gt">xsmall</display_width>
+</requires>]]></programlisting>
+				</listitem>
+			</varlistentry>
+
 			</variablelist>
 		</listitem>
 
